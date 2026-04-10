@@ -41,7 +41,7 @@ public class ProductEntity extends AuditableEntity {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<ReviewEntity> reviews = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany()
     @JoinTable(
             name = "products_categories",
             joinColumns = @JoinColumn(name = "product_id"),

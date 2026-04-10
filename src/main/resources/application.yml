@@ -2,4 +2,6 @@ spring:
   application:
     name: spring-data-jpa-cero-a-experto
   profiles:
-    active: prod
+    active: dev
+jwt:
+  secret: 8T9bx7ii6ADbyS32svZ3DSbRxfMjcPHRQSlQ1EyXudmW3boPZKhu1fwD3c4tEFG8r04Ta1vj351

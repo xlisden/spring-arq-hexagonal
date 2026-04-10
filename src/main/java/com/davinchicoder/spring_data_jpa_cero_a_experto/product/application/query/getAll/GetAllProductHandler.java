@@ -7,6 +7,7 @@ import com.davinchicoder.spring_data_jpa_cero_a_experto.product.domain.port.Prod
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +16,7 @@ public class GetAllProductHandler implements RequestHandler<GetAllProductRequest
 
     private final ProductRepository productRepository;
 
+    @Transactional(readOnly = true)
     @Override
     public GetAllProductResponse handle(GetAllProductRequest request) {
 

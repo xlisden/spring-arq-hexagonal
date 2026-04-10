@@ -1,6 +1,8 @@
-package com.davinchicoder.spring_data_jpa_cero_a_experto.user.infraestructure.api.dto;
+package com.davinchicoder.spring_data_jpa_cero_a_experto.user.infraestructure.api;
 
 import com.davinchicoder.spring_data_jpa_cero_a_experto.common.infrastructure.service.JwtService;
+import com.davinchicoder.spring_data_jpa_cero_a_experto.user.infraestructure.api.dto.LoginRequestDto;
+import com.davinchicoder.spring_data_jpa_cero_a_experto.user.infraestructure.api.dto.LoginResponseDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/users")
-@Tag(name = "user")
+@Tag(name = "users")
 @RequiredArgsConstructor
 @Slf4j
 public class UserController {
