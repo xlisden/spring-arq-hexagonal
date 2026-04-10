@@ -17,9 +17,9 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private static final long TIME_EXP = 1000 * 60 * 30 * 24;
     @Value("${jwt.secret}")
     private String JWT_SECRET = "";
+    private static final long TIME_EXP = 1000 * 60 * 30 * 24;
 
     public String genToken(UserDetails userDetails) {
         Map<String, Object> claims = Map.of(
@@ -52,8 +52,8 @@ public class JwtService {
                     .build()
                     .parseClaimsJws(token) //con parseClaimsJwt daba error
                     .getBody();
-        } catch (ExpiredJwtException e) {
-            return e.getClaims(); // si expira igual trae los claims
+//        } catch (ExpiredJwtException e) {
+//            return e.getClaims(); // si expira igual trae los claims
         } catch (UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
             throw new RuntimeException("Invalid JWT token or mal formed", e);
         }
