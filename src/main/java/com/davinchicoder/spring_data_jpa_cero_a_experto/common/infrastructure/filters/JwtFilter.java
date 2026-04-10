@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Date;
 
 @Component
 @AllArgsConstructor
@@ -40,19 +41,34 @@ public class JwtFilter extends OncePerRequestFilter {
         String username = jwtService.getUsername(token);
         log.info("Username: {}", username);
 
-        if (username == null || SecurityContextHolder.getContext().getAuthentication() != null){
+        boolean tokenExpired = jwtService.isTokenExpired(token);
+        boolean canBeTokenRenewed = jwtService.canBeTokenRenewed(token);
+
+        if (tokenExpired && !canBeTokenRenewed) {
+            log.error("Token expired");
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        if (username == null || SecurityContextHolder.getContext().getAuthentication() != null) {
             log.error("Invalid user");
             filterChain.doFilter(request, response);
             return;
         }
 
-        UserDetails user = User.withDefaultPasswordEncoder()
+        UserDetails userDetails = User.withDefaultPasswordEncoder()
                 .username(username)
                 .password("password")
                 .roles("USER")
                 .build();
 
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+
+        if (tokenExpired && canBeTokenRenewed) {
+            String renewToken = jwtService.renewToken(token, userDetails);
+            response.setHeader("Authorization", "Bearer " + renewToken);
+        }
+
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
         authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 

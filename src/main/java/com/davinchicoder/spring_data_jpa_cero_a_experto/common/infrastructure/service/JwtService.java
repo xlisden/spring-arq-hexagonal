@@ -20,6 +20,7 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String JWT_SECRET = "";
     private static final long TIME_EXP = 1000 * 60 * 30 * 24;
+    private static final long REFRESH_WINDOW = 1000 * 60 * 30 * 24 * 7; // renovado hasta 7 dias de generado
 
     public String genToken(UserDetails userDetails) {
         Map<String, Object> claims = Map.of(
@@ -68,6 +69,25 @@ public class JwtService {
     public String getUsername(String token) {
 //        return getClaimsFromToken(token).getSubject(); //no se usa porque trae todo?
         return getClaim(token, Claims::getSubject);
+    }
+
+    private Date getExpirationDate(String token) {
+        return getClaim(token, Claims::getExpiration);
+    }
+
+    public boolean isTokenExpired(String token) {
+        return getExpirationDate(token).before(new Date());
+    }
+
+    public boolean canBeTokenRenewed(String token) {
+        return getExpirationDate(token).before(new Date(System.currentTimeMillis() + REFRESH_WINDOW));
+    }
+
+    public String renewToken(String token, UserDetails userDetails) {
+        if (!canBeTokenRenewed(token)) {
+            throw new RuntimeException("Token cannot be renewed");
+        }
+        return genToken(userDetails);
     }
 
 }
