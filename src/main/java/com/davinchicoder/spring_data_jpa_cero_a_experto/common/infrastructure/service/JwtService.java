@@ -20,7 +20,7 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String JWT_SECRET = "";
     private static final long TIME_EXP = 1000 * 60 * 30 * 24;
-    private static final long REFRESH_WINDOW = 1000 * 60 * 30 * 24 * 7; // renovado hasta 7 dias de generado
+    private static final long REFRESH_WINDOW = 1000 * 60 * 60 * 24 * 7; // renovado hasta 7 dias de generado
 
     public String genToken(UserDetails userDetails) {
         Map<String, Object> claims = Map.of(
@@ -88,6 +88,11 @@ public class JwtService {
             throw new RuntimeException("Token cannot be renewed");
         }
         return genToken(userDetails);
+    }
+
+    public boolean isValidToken(String token, UserDetails userDetails) {
+        String username = getUsername(token);
+        return username.equals(userDetails.getUsername());
     }
 
 }

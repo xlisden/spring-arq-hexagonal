@@ -9,14 +9,13 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Date;
 
 @Component
 @AllArgsConstructor
@@ -24,6 +23,7 @@ import java.util.Date;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
+    private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -38,9 +38,6 @@ public class JwtFilter extends OncePerRequestFilter {
         String token = authorization.substring(7);
         log.info("Token: {}", token);
 
-        String username = jwtService.getUsername(token);
-        log.info("Username: {}", username);
-
         boolean tokenExpired = jwtService.isTokenExpired(token);
         boolean canBeTokenRenewed = jwtService.canBeTokenRenewed(token);
 
@@ -50,18 +47,18 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        if (username == null || SecurityContextHolder.getContext().getAuthentication() != null) {
+        String username = jwtService.getUsername(token);
+        log.info("Username: {}", username);
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+        boolean isValidToken = jwtService.isValidToken(token, userDetails);
+
+        if (!isValidToken || SecurityContextHolder.getContext().getAuthentication() != null) {
             log.error("Invalid user");
             filterChain.doFilter(request, response);
             return;
         }
-
-        UserDetails userDetails = User.withDefaultPasswordEncoder()
-                .username(username)
-                .password("password")
-                .roles("USER")
-                .build();
-
 
         if (tokenExpired && canBeTokenRenewed) {
             String renewToken = jwtService.renewToken(token, userDetails);
