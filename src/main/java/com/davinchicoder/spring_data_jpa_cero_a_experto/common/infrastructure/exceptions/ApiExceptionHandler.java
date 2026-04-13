@@ -1,6 +1,7 @@
 package com.davinchicoder.spring_data_jpa_cero_a_experto.common.infrastructure.exceptions;
 
 import com.davinchicoder.spring_data_jpa_cero_a_experto.product.domain.exception.ProductNotFoundException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.naming.AuthenticationException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,6 +37,15 @@ public class ApiExceptionHandler {
 
         return new ErrorMessage(exception.getMessage(), exception.getClass().getSimpleName(), request.getRequestURI());
     }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler({JwtException.class, AuthenticationException.class})
+    @ResponseBody
+    public ErrorMessage forbidden(HttpServletRequest request, Exception exception) {
+
+        return new ErrorMessage(exception.getMessage(), exception.getClass().getSimpleName(), request.getRequestURI());
+    }
+
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)

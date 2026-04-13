@@ -77,6 +77,7 @@ public class ProductController implements ProductApi {
 
     @Operation(summary = "Get product by id", description = "Get product by id")
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ProductDto> getProductById(@PathVariable Long id) {
 
         log.info("Getting product with id {}", id);
@@ -124,7 +125,6 @@ public class ProductController implements ProductApi {
 
     @Operation(summary = "Delete product", description = "Delete product")
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
 
         log.info("Deleting product with id {}", id);
