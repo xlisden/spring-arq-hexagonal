@@ -1,4 +1,11 @@
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: Ov23liMl6oQwf8rLXlf4
+            client-secret: 3fb2710489ab34d0b8ebb562cb91e51c4b61843b
   datasource:
     url: jdbc:postgresql://localhost:5432/spring
     username: root

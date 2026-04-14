@@ -33,7 +33,7 @@ import java.net.URI;
 @RequestMapping("/api/v1/products")
 @Tag(name = "Product", description = "Product API operations")
 @RequiredArgsConstructor
-@SecurityRequirement(name = "Bearer Authentication")
+//@SecurityRequirement(name = "Bearer Authentication")
 @Slf4j
 public class ProductController implements ProductApi {
 

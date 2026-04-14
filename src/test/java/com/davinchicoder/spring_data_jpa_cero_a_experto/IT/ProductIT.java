@@ -1,10 +1,12 @@
 package com.davinchicoder.spring_data_jpa_cero_a_experto.IT;
 
+import com.davinchicoder.spring_data_jpa_cero_a_experto.IT.config.RestConfig;
 import com.davinchicoder.spring_data_jpa_cero_a_experto.product.infrastructure.api.dto.ProductDto;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -23,9 +25,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @Slf4j
 @AutoConfigureMockMvc
+@org.springframework.context.annotation.Import(RestConfig.class)
 public class ProductIT {
 
     @Autowired
+    @Qualifier("restTemplate")
     private TestRestTemplate restTemplate;
 
     @Autowired
