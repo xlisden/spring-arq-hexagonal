@@ -1,30 +1,31 @@
 version: "3.1"
 
 services:
-  spring-boot:
-    build: ./
-    mem_reservation: 512M
-    ports:
-      - "8080:8080"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    environment:
-      PROFILE: prod
+#  spring-boot:
+#    build: ./
+#    mem_reservation: 512M
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      postgres:
+#        condition: service_healthy
+#    healthcheck:
+#      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 5
+#    environment:
+#      PROFILE: prod
 
 
   postgres:
+    container_name: postgres5434
     image: pgvector/pgvector:pg17
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: password
     ports:
-      - "5432:5432"
+      - "5434:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./docker-config/database/init.sql:/docker-entrypoint-initdb.d/init.sql
